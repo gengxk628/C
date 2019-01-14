@@ -13,50 +13,348 @@ private:
 	int a[129];  //整数部分,其中第0位表示整数占有的的长度
 	int b[129];  //小数部分,其中第0位表示整数占有的的长度
 	bool pm;     //plus-minus,true代表整数，false代表负数
+
+private:
+	int compareAbs(const HPN& x);
+	//比较自己与x绝对值的大小
+	static int compareAbs(const HPN& x, const HPN& y);
+	//比较两个高精度数绝对值的大小，x>y返回1，x=y返回-1，x<y返回-1
+
+	void addAbs(HPN x);
+	//将自身加上x，不用按引用传值是为了避免x.addAbs(x)产生错误
+	void addAbs(HPN x, HPN y);//将两个正的高精度数相加，结果储存在自己中
+
+	void subAbs(HPN x);
+	//将自身减去x（x小于自身时不做减法）
+	void subAbs(HPN x, HPN y);
+	//将两个高精度数绝对值相减，结果储存在自己中（x>=y）
+
+	void mulAbs(HPN x, HPN y);
+	//将两个高精度数绝对值相乘，结果储存在自己中
+
 public:
 	HPN();
 
-	static void clear(HPN& x);  //将数组清零
+	static void clear(HPN& x);
 	void clear();
 	friend void clear(HPN& x);
+	//将数组清零
 
-	static void print(const HPN& x);  //将高精度数打印到命令行
+	static void print(const HPN& x);
 	void print();
 	friend void print(const HPN& x);
+	//将高精度数打印到命令行
 
-	void setNumber(int x);  //用整形数给高精度数赋值
-	void setNumber(int x, int y);  //x代表整数部分，y代表小数部分
-	void setNumber(char x[], char y[]);  //x[]代表整数部分，y[]代表小数部分，忽略第一个非数字字符以后的内容
-	void setNumber(char x[], char y[], bool pm);  //pm为true代表正数，为false代表负数
-	void setNumber(char x[]);  //将字符串转化为高精度数，x[]="-12345.1234a12"，忽略第一个非数字字符以后的内容(+-除外)
+	void setNumber(int x);
+	//用整形数给高精度数赋值
+	void setNumber(int x, int y);
+	//x代表整数部分，y代表小数部分
+	void setNumber(char x[], char y[]);
+	//x[]代表整数部分，y[]代表小数部分，忽略第一个非数字字符以后的内容
+	void setNumber(char x[], char y[], bool pm);
+	//pm为true代表正数，为false代表负数
+	void setNumber(char x[]);
+	//将字符串转化为高精度数，x[]="-12345.1234a12"，忽略第一个非数字字符以后的内容(+-除外)
 
-	int getString(char s[]);  //将该高精度数转化为字符串储存到s[]中，返回s[]需要的长度（有可能发生越界）
-	bool getString(char s[], int length);  //将该高精度数转化为字符串储存到s[]中,length为该数组的最大长度。
+	int getString(char s[]);
+	//将该高精度数转化为字符串储存到s[]中，返回s[]需要的长度（有可能发生越界）
+	bool getString(char s[], int length);
+	//将该高精度数转化为字符串储存到s[]中,length为该数组的最大长度。
 	//返回true代表完全转化；false代表长度不足，部分转化，截取前面部分
 
-	void copy(HPN& x);  //将高精度数x“赋值”给自己
-	static void copy(HPN& x, HPN& y);  //将高精度数y“赋值”给高精度数x 
+	void copy(HPN& x);
+	//将高精度数x“赋值”给自己
+	static void copy(HPN& x, HPN& y);
+	//将高精度数y“赋值”给高精度数x 
 	friend void copy(HPN& x, HPN& y);
+	//将高精度数y“赋值”给高精度数x 
 
-	int compareAbs(const HPN& x);  //比较自己与x绝对值的大小
-	static int compareAbs(const HPN& x, const HPN& y);  //比较两个高精度数绝对值的大小，x>y返回1，x=y返回-1，x<y返回-1
-	int compare(const HPN& x);  //比较自己与x的大小
-	static int compare(const HPN& x, const HPN& y);  //比较两个高精度数的大小，x>y返回1，x=y返回-1，x<y返回-1
+	int compare(const HPN& x);
+	//比较自己与x的大小
+	static int compare(const HPN& x, const HPN& y);
+	//比较两个高精度数的大小，x>y返回1，x=y返回-1，x<y返回-1
 	friend int compare(const HPN& x, const HPN& y);
 
-	void addAbs(HPN x);  //将自身加上x，不用按引用传值是为了避免x.addAbs(x)产生错误
-	void addAbs(HPN x, HPN y);  //将两个正的高精度数相加，结果储存在自己中
+	void add(HPN x);
+	//将自身加上x
+	void add(HPN x, HPN y);
+	//将两个高精度数相加，结果储存在自己中
 
-	void subAbs(HPN x);  //将自身减去x（x小于自身时不做减法）
-	void subAbs(HPN x, HPN y);  //将两个正的高精度数相减，结果储存在自己中（x>=y）
+	void sub(HPN x);
+	//将自身减去x
+	void sub(HPN x, HPN y);
+	//将两个高精度数相减，结果储存在自己中
+
+	void mul(HPN x);
+	//将自身乘以x
+	//void mul(HPN x, HPN y);
+	//将两个高精度数相乘，结果储存在自己中
 };
 
 void main(){
 	HPN x,y;
-	x.setNumber("10001");
-	y.setNumber("20.98");
-	x.subAbs(x,y);
-	print(y);
+	x.setNumber("-11111.111");
+	y.setNumber("-11.111111");
+	x.mul(y);
+	printf("%.12f\n", 11111.111*11.111111);
+	x.print();
+}
+
+void HPN::addAbs(HPN x){
+	int length=x.b[0]>b[0]?x.b[0]:b[0];  //先加小数
+	int index;  //计算小数位数
+	for(int i=length;i>=1;i--){
+		b[i]+=x.b[i];
+		if(b[i]>=10000 && i>=2){  //i==1时要向整数位进位
+			b[i-1]+=b[i]/10000;
+			b[i]%=10000;
+		}
+	}
+	if(b[1]>=10000){  //i==1时要向整数位进位
+		a[1]+=b[1]/10000;
+		b[1]%=10000;
+	}
+	for(index=length;index>=1 && b[index]==0;index--);  //计算小数的数位，从后往前
+	b[0]=index;
+
+	//再处理整数位
+	length=x.a[0]>a[0]?x.a[0]:a[0];
+	for(int i=1;i<=length;i++){
+		a[i]+=x.a[i];
+		if(a[i]>=10000){
+			a[i+1]+=a[i]/10000;
+			a[i]%=10000;
+		}
+	}
+	if(a[length+1]>0)  //计算整数的位数
+		a[0]=length+1;
+	else
+		a[0]=length;
+}
+void HPN::addAbs(HPN x,HPN y){
+	clear();  //先将自身初始化
+	int length=x.b[0]>y.b[0]?x.b[0]:y.b[0];  //先加小数
+	int index;  //计算小数位数
+	for(int i=length;i>=1;i--){
+		b[i]+=x.b[i]+y.b[i];
+		if(b[i]>=10000 && i>=2){  //i==1时要向整数位进位
+			b[i-1]+=b[i]/10000;
+			b[i]%=10000;
+		}
+	}
+	if(b[1]>=10000){  //i==1时要向整数位进位
+		a[1]+=b[1]/10000;
+		b[1]%=10000;
+	}
+	for(index=length;index>=1 && b[index]==0;index--);  //计算小数的数位，从后往前
+	b[0]=index;
+
+	//再处理整数位
+	length=x.a[0]>y.a[0]?x.a[0]:y.a[0];
+	for(int i=1;i<=length;i++){
+		a[i]+=x.a[i]+y.a[i];
+		if(a[i]>=10000){
+			a[i+1]+=a[i]/10000;
+			a[i]%=10000;
+		}
+	}
+	if(a[length+1]>0)  //计算整数的位数
+		a[0]=length+1;
+	else
+		a[0]=length;
+}
+
+void HPN::subAbs(HPN x){
+	if(compareAbs(x)<0) return;  //自身绝对值小于x时不做处理
+
+	int length=b[0]>x.b[0]?b[0]:x.b[0];
+	int index;  //计算小数位数
+	for(int i=length;i>=2;i--){  //先处理小数位
+		b[i]-=x.b[i];
+		if(b[i]<0){  //借位
+			b[i-1]-=1;
+			b[i]+=10000;
+		}
+	}
+	b[1]-=x.b[1];
+	if(b[1]<0){  //向整数位借位
+		a[1]-=1;
+		b[1]+=10000;
+	}
+	for(index=length;index>=1&&b[index]==0;index--);  //计算小数的数位，从后往前
+	b[0]=index;
+
+	//再处理整数位
+	length=x.a[0]>a[0]?x.a[0]:a[0];
+	for(int i=1;i<=length;i++){
+		a[i]-=x.a[i];
+		if(a[i]<0){
+			a[i+1]-=1;
+			a[i]+=10000;
+		}
+	}
+	for(index=length;index>=1&&a[index]==0;index--);  //计算整数的数位，从前往后
+	a[0]=index;
+}
+void HPN::subAbs(HPN x, HPN y){
+	if(compareAbs(x,y)<0) return;  //x绝对值小于y时不做处理
+	clear();  //先将自身初始化
+
+	int length=x.b[0]>y.b[0]?x.b[0]:y.b[0];
+	int index;  //计算小数位数
+	for(int i=length;i>=2;i--){  //先处理小数位
+		b[i]+=x.b[i]-y.b[i];
+		if(b[i]<0){  //借位
+			b[i-1]-=1;
+			b[i]+=10000;
+		}
+	}
+	b[1]+=x.b[1]-y.b[1];
+	if(b[1]<0){  //向整数位借位
+		a[1]-=1;
+		b[1]+=10000;
+	}
+	for(index=length;index>=1&&b[index]==0;index--);  //计算小数的数位，从后往前
+	b[0]=index;
+
+	//再处理整数位
+	length=y.a[0]>x.a[0]?y.a[0]:x.a[0];
+	for(int i=1;i<=length;i++){
+		a[i]+=x.a[i]-y.a[i];
+		if(a[i]<0){
+			a[i+1]-=1;
+			a[i]+=10000;
+		}
+	}
+	for(index=length;index>=1&&a[index]==0;index--);  //计算整数的数位，从前往后
+	a[0]=index;
+}
+
+void HPN::mulAbs(HPN x, HPN y) {
+	clear();
+
+	int index;
+	//处理小数*小数部分
+	for (int i = x.b[0]; i >= 1; i--) {
+		for (int j = y.b[0]; j >= 1; j--) {
+			b[i + j] += x.b[i] * y.b[j];
+			if (b[i + j] >= 10000) {
+				b[i + j - 1] += b[i + j] / 10000;
+				b[i + j] %= 10000;
+			}
+		}
+	}
+	//处理小数*整数部分
+	for (int i = x.b[0]; i >= 1; i--) {
+		for (int j = 1; j <= y.a[0]; j++) {
+			if (i >= j) {
+				b[i + 1 - j] += x.b[i] * y.a[j];
+				if (b[i + 1 - j] >= 10000) {
+					if (i + 1 - j == 1) {  //要进位到整数
+						a[1] += b[1] / 10000;
+						b[1] %= 10000;
+					}
+					else {
+						b[i - j] += b[i + 1 - j] / 10000;
+						b[i + 1 - j] %= 10000;
+					}
+				}
+			}
+			else {
+				a[j - i] += x.b[i] * y.a[j];
+				if (a[j - i] >= 10000) {
+					a[j - i + 1] += a[j - i] / 10000;
+					a[j - i] %= 10000;
+				}
+			}
+		}
+	}
+	//处理整数*小数部分
+	for (int i = y.b[0]; i >= 1; i--) {
+		for (int j = 1; j <= x.a[0]; j++) {
+			if (i >= j) {
+				b[i + 1 - j] += y.b[i] * x.a[j];
+				if (b[i + 1 - j] >= 10000) {
+					if (i + 1 - j == 1) {  //要进位到整数
+						a[1] += b[1] / 10000;
+						b[1] %= 10000;
+					}
+					else {
+						b[i - j] += b[i + 1 - j] / 10000;
+						b[i + 1 - j] %= 10000;
+					}
+				}
+			}
+			else {
+				a[j - i] += y.b[i] * x.a[j];
+				if (a[j - i] >= 10000) {
+					a[j - i + 1] += a[j - i] / 10000;
+					a[j - i] %= 10000;
+				}
+			}
+		}
+	}
+	//处理整数*整数部分
+	for (int i = 1; i <= x.a[0]; i++) {
+		for (int j = 1; j <= y.a[0]; j++) {
+			a[i + j - 1] += x.a[i] * y.a[j];
+			if (a[i + j - 1] >= 10000) {  //处理进位
+				a[i + j] += a[i + j - 1] / 10000;
+				a[i + j - 1] %= 10000;
+			}
+		}
+	}
+	for (index = x.b[0] + y.b[0]; index >= 1 && b[index] == 0; index--);  //计算小数的数位，从后往前
+	b[0] = index;
+	for (index = x.a[0] + y.a[0]; index >= 1 && a[index] == 0; index--);  //计算整数的数位，从前往后
+	a[0] = index;
+}
+
+int HPN::compareAbs(const HPN& x){
+	if(a[0]>x.a[0])
+		return 1;
+	if(a[0]<x.a[0])
+		return -1;
+	if(a[0]==x.a[0]){  //位数相同
+		for(int i=a[0];i>=1;i--){
+				if(a[i]>x.a[i])
+					return 1;
+				if(a[i]<x.a[i])
+					return -1;		
+		}
+		//整数部分大小相同
+		int length=b[0]>x.b[0]?b[0]:x.b[0];  //取较大的小数位数
+		for(int i=1;i<=length;i++){
+			if(b[i]>x.b[i])
+				return 1;
+			if(b[i]<x.b[i])
+				return -1;
+		}
+		return 0;  //小数部分也相同
+	}
+}
+int HPN::compareAbs(const HPN& x, const HPN& y){
+	if(x.a[0]>y.a[0])
+		return 1;
+	if(x.a[0]<y.a[0])
+		return -1;
+	if(x.a[0]==y.a[0]){  //位数相同
+		for(int i=x.a[0];i>=1;i--){
+				if(x.a[i]>y.a[i])
+					return 1;
+				if(x.a[i]<y.a[i])
+					return -1;		
+		}
+		//整数部分大小相同
+		int length=x.b[0]>y.b[0]?x.b[0]:y.b[0];  //取较大的小数位数
+		for(int i=1;i<=length;i++){
+			if(x.b[i]>y.b[i])
+				return 1;
+			if(x.b[i]<y.b[i])
+				return -1;
+		}
+		return 0;  //小数部分也相同
+	}
 }
 
 HPN::HPN(){
@@ -105,20 +403,7 @@ void HPN::print(const HPN& x){
 	}
 }
 void HPN::print(){
-
-	if(!pm) printf("-");
-
-	printf("%d",a[a[0]]);  //无前导0
-	for(int i=a[0]-1;i>=1;i--){
-		printf("%04d",a[i]);  //有前导零，注意储存方向与输出方向
-	}
-
-	if(b[0]!=0){  //存在小数部分
-		printf(".");
-		for(int i=1;i<=b[0];i++){
-			printf("%04d",b[i]);
-		}
-	}
+	HPN::print(*this);
 }
 void print(const HPN& x){
 	if(!x.pm) printf("-");
@@ -355,18 +640,6 @@ bool HPN::getString(char s[], int length){
 	}
 }
 
-void HPN::copy(HPN& x){
-	if(this!=&x){  //防止copy(*this)
-		clear();
-		pm=x.pm;
-		for(int i=0;i<=x.a[0];i++){
-			a[i]=x.a[i];
-		}
-		for(int i=0;i<=x.b[0];i++){
-			b[i]=x.b[i];
-		}
-	}
-}
 void HPN::copy(HPN& x, HPN& y){
 	if(&x != &y){  //防止copy(x,x)
 		x.clear();
@@ -379,76 +652,13 @@ void HPN::copy(HPN& x, HPN& y){
 		}
 	}
 }
+void HPN::copy(HPN& x){
+	HPN::copy(*this,x);
+}
 void copy(HPN& x, HPN& y){
-	if(&x != &y){
-		x.clear();
-		x.pm=y.pm;
-		for(int i=0;i<=y.a[0];i++){
-			x.a[i]=y.a[i];
-		}
-		for(int i=0;i<=y.b[0];i++){
-			x.b[i]=y.b[i];
-		}
-	}
+	HPN::copy(x,y);
 }
 
-int HPN::compareAbs(const HPN& x){
-	if(a[0]>x.a[0])
-		return 1;
-	if(a[0]<x.a[0])
-		return -1;
-	if(a[0]==x.a[0]){  //位数相同
-		for(int i=a[0];i>=1;i--){
-				if(a[i]>x.a[i])
-					return 1;
-				if(a[i]<x.a[i])
-					return -1;		
-		}
-		//整数部分大小相同
-		int length=b[0]>x.b[0]?b[0]:x.b[0];  //取较大的小数位数
-		for(int i=1;i<=length;i++){
-			if(b[i]>x.b[i])
-				return 1;
-			if(b[i]<x.b[i])
-				return -1;
-		}
-		return 0;  //小数部分也相同
-	}
-}
-int HPN::compareAbs(const HPN& x, const HPN& y){
-	if(x.a[0]>y.a[0])
-		return 1;
-	if(x.a[0]<y.a[0])
-		return -1;
-	if(x.a[0]==y.a[0]){  //位数相同
-		for(int i=x.a[0];i>=1;i--){
-				if(x.a[i]>y.a[i])
-					return 1;
-				if(x.a[i]<y.a[i])
-					return -1;		
-		}
-		//整数部分大小相同
-		int length=x.b[0]>y.b[0]?x.b[0]:y.b[0];  //取较大的小数位数
-		for(int i=1;i<=length;i++){
-			if(x.b[i]>y.b[i])
-				return 1;
-			if(x.b[i]<y.b[i])
-				return -1;
-		}
-		return 0;  //小数部分也相同
-	}
-}
-
-int HPN::compare(const HPN& x){
-	if(pm==true&&x.pm==false)
-		return 1;
-	if(pm==false&&x.pm==true)
-		return -1;
-	if(pm==true&&x.pm==true)  //均为正数
-		return compareAbs(x);
-	if(pm==false&&x.pm==false)  //均为负数
-		return -compareAbs(x);
-}
 int HPN::compare(const HPN& x, const HPN& y){
 	if(x.pm==true&&y.pm==false)
 		return 1;
@@ -459,143 +669,56 @@ int HPN::compare(const HPN& x, const HPN& y){
 	if(x.pm==false&&y.pm==false)  //均为负数
 		return -HPN::compareAbs(x,y);
 }
+int HPN::compare(const HPN& x){
+	return HPN::compare(*this,x);
+}
 int compare(const HPN& x, const HPN& y){
-	if(x.pm==true&&y.pm==false)
-		return 1;
-	if(x.pm==false&&y.pm==true)
-		return -1;
-	if(x.pm==true&&y.pm==true)  //均为正数
-		return HPN::compareAbs(x,y);
-	if(x.pm==false&&y.pm==false)  //均为负数
-		return -HPN::compareAbs(x,y);
+	return HPN::compare(x,y);
 }
 
-void HPN::addAbs(HPN x){
-	int length=x.b[0]>b[0]?x.b[0]:b[0];  //先加小数
-	int index;  //计算小数位数
-	for(int i=length;i>=1;i--){
-		b[i]+=x.b[i];
-		if(b[i]>=10000 && i>=2){  //i==1时要向整数位进位
-			b[i-1]+=b[i]/10000;
-			b[i]%=10000;
+void HPN::add(HPN x){
+	if(x.pm && pm){//都是正数
+		addAbs(x);
+	}else if(!x.pm && !pm){  //都是负数
+		addAbs(x);
+	}else if(pm && !x.pm){  //自己正x负
+		if(HPN::compareAbs(x)>=0){  //自己的绝对值大
+			subAbs(x);
+		}else{
+			subAbs(x,*this);
+			pm=false;
+		}
+	}else if(!pm && x.pm){  //自己负x正
+		if(HPN::compareAbs(x)>=0){  //自己的绝对值大
+			subAbs(x);
+			pm=false;
+		}else{
+			subAbs(x,*this);
 		}
 	}
-	if(b[1]>=10000){  //i==1时要向整数位进位
-		a[1]+=b[1]/10000;
-		b[1]%=10000;
-	}
-	for(index=length;index>=1 && b[index]==0;index--);  //计算小数的数位，从后往前
-	b[0]=index;
-
-	//再处理整数位
-	length=x.a[0]>a[0]?x.a[0]:a[0];
-	for(int i=1;i<=length;i++){
-		a[i]+=x.a[i];
-		if(a[i]>=10000){
-			a[i+1]+=a[i]/10000;
-			a[i]%=10000;
-		}
-	}
-	if(a[length+1]>0)  //计算整数的位数
-		a[0]=length+1;
-	else
-		a[0]=length;
 }
-void HPN::addAbs(HPN x,HPN y){
-	clear();  //先将自身初始化
-	int length=x.b[0]>y.b[0]?x.b[0]:y.b[0];  //先加小数
-	int index;  //计算小数位数
-	for(int i=length;i>=1;i--){
-		b[i]+=x.b[i]+y.b[i];
-		if(b[i]>=10000 && i>=2){  //i==1时要向整数位进位
-			b[i-1]+=b[i]/10000;
-			b[i]%=10000;
-		}
-	}
-	if(b[1]>=10000){  //i==1时要向整数位进位
-		a[1]+=b[1]/10000;
-		b[1]%=10000;
-	}
-	for(index=length;index>=1 && b[index]==0;index--);  //计算小数的数位，从后往前
-	b[0]=index;
-
-	//再处理整数位
-	length=x.a[0]>y.a[0]?x.a[0]:y.a[0];
-	for(int i=1;i<=length;i++){
-		a[i]+=x.a[i]+y.a[i];
-		if(a[i]>=10000){
-			a[i+1]+=a[i]/10000;
-			a[i]%=10000;
-		}
-	}
-	if(a[length+1]>0)  //计算整数的位数
-		a[0]=length+1;
-	else
-		a[0]=length;
+void HPN::add(HPN x, HPN y){
+	clear();  //初始化
+	x.add(y);
+	copy(x);
 }
 
-void HPN::subAbs(HPN x){
-	if(compareAbs(x)<0) return;  //自身绝对值小于x时不做处理
-
-	int length=b[0]>x.b[0]?b[0]:x.b[0];
-	int index;  //计算小数位数
-	for(int i=length;i>=2;i--){  //先处理小数位
-		b[i]-=x.b[i];
-		if(b[i]<0){  //借位
-			b[i-1]-=1;
-			b[i]+=10000;
-		}
-	}
-	b[1]-=x.b[1];
-	if(b[1]<0){  //向整数位借位
-		a[1]-=1;
-		b[1]+=10000;
-	}
-	for(index=length;index>=1&&b[index]==0;index--);  //计算小数的数位，从后往前
-	b[0]=index;
-
-	//再处理整数位
-	length=x.a[0]>a[0]?x.a[0]:a[0];
-	for(int i=1;i<=length;i++){
-		a[i]-=x.a[i];
-		if(a[i]<0){
-			a[i+1]-=1;
-			a[i]+=10000;
-		}
-	}
-	for(index=length;index>=1&&a[index]==0;index--);  //计算整数的数位，从前往后
-	a[0]=index;
+void HPN::sub(HPN x){
+	x.pm=!x.pm;
+	add(x);
 }
-void HPN::subAbs(HPN x, HPN y){
-	if(compareAbs(x,y)<0) return;  //x绝对值小于y时不做处理
-	clear();  //先将自身初始化
+void HPN::sub(HPN x, HPN y){
+	y.pm=!y.pm;
+	add(x,y);
+}
 
-	int length=x.b[0]>y.b[0]?x.b[0]:y.b[0];
-	int index;  //计算小数位数
-	for(int i=length;i>=2;i--){  //先处理小数位
-		b[i]+=x.b[i]-y.b[i];
-		if(b[i]<0){  //借位
-			b[i-1]-=1;
-			b[i]+=10000;
-		}
+void HPN::mul(HPN x) {
+	bool sign=pm;  //临时存储符号
+	mulAbs(*this, x);
+	if (x.pm && sign || !x.pm && !sign) {  //同正同负
+		pm = true;
 	}
-	b[1]+=x.b[1]-y.b[1];
-	if(b[1]<0){  //向整数位借位
-		a[1]-=1;
-		b[1]+=10000;
+	else {
+		pm = false;
 	}
-	for(index=length;index>=1&&b[index]==0;index--);  //计算小数的数位，从后往前
-	b[0]=index;
-
-	//再处理整数位
-	length=y.a[0]>x.a[0]?y.a[0]:x.a[0];
-	for(int i=1;i<=length;i++){
-		a[i]+=x.a[i]-y.a[i];
-		if(a[i]<0){
-			a[i+1]-=1;
-			a[i]+=10000;
-		}
-	}
-	for(index=length;index>=1&&a[index]==0;index--);  //计算整数的数位，从前往后
-	a[0]=index;
 }
